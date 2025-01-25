@@ -80,3 +80,39 @@ export const getAllPackages = async (req, res, next) => {
     next(error);
   }
 };
+
+// Get all packages for admin
+export const getAllPackagesAdmin = async (req, res, next) => {
+  try {
+    // Fidn the packages 
+    const packages = await packageSchema.find({});
+    // Send response
+    res.status(200).json({ message: "Packages fetched", data: packages });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Toggle package status (active/deactive)
+export const togglePackageStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Find package
+    const pkg = await packageSchema.findById(id);
+    if (!pkg) {
+      return res.status(404).json({ message: "Package not found" });
+    }
+
+    // Toggle the isActive value
+    pkg.isActive = !pkg.isActive;
+    await pkg.save();
+
+    res.status(200).json({
+      message: `Package ${pkg.isActive ? "activated" : "deactivated"} successfully`,
+      data: pkg
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -15,3 +15,9 @@ router.delete("/del-package/:id", authenticate, authorize("admin"), deletePackag
 
 // Get all packages route
 router.get("/get-packages", getAllPackages)
+
+// Get all package for the admin route
+router.get("/get-packages-admin",authenticate, authorize("admin"), getAllPackagesAdmin)
+
+// Toggle status activate and deactivate route
+router.patch("/packages/:id/toggle-status", togglePackageStatus);
