@@ -1,6 +1,7 @@
 import userSchema from "../models/user.model.js";
 import { AppError } from "../utils/AppError.js";
 import { error, success } from "../shared/response.js";
+import { MESSAGES } from "../shared/constants.js";
 
 // ***************************************************************************
 // ********************* Users controllers for admin **********************************
@@ -32,7 +33,7 @@ export const getAllUser = async (req, res, next) => {
 
     const result = { users, totalUsers, proUser, proUsersCount };
 
-    success(res, result, "Users fetched successfully");
+    success(res, result, MESSAGES.USERS_FETCHED);
   } catch (error) {
     next(error);
   }
@@ -46,7 +47,7 @@ export const toggleUserActiveStatus = async (req, res, next) => {
     // Find the user
     const user = await userSchema.findById(userId);
     if (!user) {
-      return next(new AppError("User not found", 404));
+      return next(new AppError(MESSAGES.USER_NOT_FOUND, 404));
     }
 
     // Toggle isActive and update

@@ -12,6 +12,7 @@ import { generateOTP } from "../utils/otpGenerator.js";
 import { sendEmail } from "../services/sendEmail.js";
 import { success } from "../shared/response.js";
 import { regex } from "../shared/regex.js";
+import { MESSAGES } from "../shared/constants.js";
 
 // ***************************** Signup and login functions ********************************
 // ******************************************************************************************
@@ -27,7 +28,7 @@ export const OTPgenerating = async (req, res, next) => {
     // Find the user by email
     const isUserExist = await userSchema.findOne({ email });
     if (isUserExist) {
-      return next(new AppError("User already exist", 404));
+      return next(new AppError(MESSAGES.USER_ALREADY_EXIST, 404));
     }
 
     // Generate 6 degit OTP
@@ -59,7 +60,7 @@ export const OTPgenerating = async (req, res, next) => {
     );
 
     // If user created the send success response
-    success(res, { email }, "OTP sent to your email successfully");
+    success(res, { email }, MESSAGES.OTP_SENDED);
   } catch (error) {
     next(error);
   }
@@ -72,14 +73,14 @@ export const verifyOTP = async (req, res, next) => {
     // Destructure email and OTP from request body
     const { email, otp } = req.body;
     if (!email || !otp) {
-      return next(new AppError("Email and OTP are required", 400));
+      return next(new AppError(MESSAGES.EMAIL_OTP_REQUIRED, 400));
     }
     // Find the temporary user from database using email
     const tempUser = await TempUser.findOne({ email });
 
     // Check the temporary user is present or not
     if (!tempUser) {
-      return next(new AppError("User not found", 404));
+      return next(new AppError(MESSAGES.USER_NOT_FOUND, 404));
     }
 
     // Check the OTP is valid or not
@@ -89,7 +90,7 @@ export const verifyOTP = async (req, res, next) => {
 
     // Check the OTP expire or not (10 minutes)
     if (tempUser.otpExpiresAt < Date.now()) {
-      return next(new AppError("OTP has expired", 400));
+      return next(new AppError(MESSAGES.OTP_EXPIRED, 400));
     }
 
     // Create new user
@@ -129,7 +130,7 @@ export const verifyOTP = async (req, res, next) => {
     };
 
     // Send a response
-    success(res, user, "User created successfully");
+    success(res, user, MESSAGES.CREATED);
   } catch (error) {
     next(error);
   }
@@ -147,12 +148,7 @@ export const loginUser = async (req, res, next) => {
     const isUser = await userSchema.findOne({ email });
     // User not signuped throw error
     if (!isUser) {
-      return next(
-        new AppError(
-          "No account found with this email. Please sign up first.",
-          400
-        )
-      );
+      return next(new AppError(MESSAGES.ACCOUNT_NOT_FOUND, 400));
     }
 
     // Check if user is blocked
@@ -167,7 +163,7 @@ export const loginUser = async (req, res, next) => {
     // Compare the password
     const passwordIsMatch = await comparePassword(password, isUser.password);
     if (!passwordIsMatch) {
-      return next(new AppError("Invalid email or password", 401));
+      return next(new AppError(MESSAGES.INVALID_CREDENTIALS, 401));
     }
     // Save the last login time
     isUser.lastLogin = new Date();
@@ -195,7 +191,7 @@ export const loginUser = async (req, res, next) => {
     };
 
     // Send a response
-    success(res, user, "User logged in successfully");
+    success(res, user, MESSAGES.LOGIN_SUCCESS);
   } catch (error) {
     next(error);
   }
@@ -211,7 +207,7 @@ export const logOutUser = async (req, res, next) => {
       sameSite: "none",
     });
     // Use your success response utility
-    success(res, null, "Logged out successfully");
+    success(res, null, MESSAGES.LOGOUT_SUCCESS);
   } catch (error) {
     next(error);
   }
@@ -232,13 +228,13 @@ export const generateForgotPasswordOtp = async (req, res, next) => {
     }
     // Validate the email using regex
     if (!regex.email.test(email)) {
-      return next(new AppError("Invalid email format", 400));
+      return next(new AppError(MESSAGES.INVALID_FORMAT, 400));
     }
     // Find user by email
     const user = await userSchema.findOne({ email });
     // throw error if not any user with the email
     if (!user) {
-      return next(new AppError("User not found with this email", 404));
+      return next(new AppError(MESSAGES.USER_NOT_FOUND, 404));
     }
     // Generate 6 degit OTP
     const OTP = generateOTP();
@@ -259,7 +255,7 @@ export const generateForgotPasswordOtp = async (req, res, next) => {
       { upsert: true, new: true }
     );
     // Send the response
-    success(res, { email }, "OTP sent to your email for password reset.");
+    success(res, { email }, MESSAGES.OTP_SENDED_PASSWORD);
   } catch (error) {
     next(error);
   }
@@ -282,12 +278,12 @@ export const verifyForgotPasswordOtp = async (req, res, next) => {
     }
     // Compare OTP
     if (tempUser.otp !== otp) {
-      return next(new AppError("Invalid OTP", 400));
+      return next(new AppError(MESSAGES.INVALID_OTP, 400));
     }
 
     // Check if OTP expired
     if (tempUser.otpExpiresAt < Date.now()) {
-      return next(new AppError("OTP has expired", 400));
+      return next(new AppError(MESSAGES.OTP_EXPIRED, 400));
     }
 
     // Hash the new password
@@ -301,14 +297,14 @@ export const verifyForgotPasswordOtp = async (req, res, next) => {
     );
 
     if (!updatedUser) {
-      return next(new AppError("User not found", 404));
+      return next(new AppError(MESSAGES.USER_NOT_FOUND, 404));
     }
 
     // Delete temporary OTP record
     await TempUser.deleteOne({ email });
 
     // Respond with success
-    success(res, null, "Password has been reset successfully.");
+    success(res, null, MESSAGES.PASSWORD_CHANGED);
   } catch (err) {
     next(err); // Forward to global error handler
   }

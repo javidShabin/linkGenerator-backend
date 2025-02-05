@@ -10,6 +10,7 @@ import userSchema from "../models/user.model.js";
 import linkSchema from "../models/link.model.js";
 import { linkGeneratingValidation } from "../validators/link.validation.js";
 import { success } from "../shared/response.js";
+import { MESSAGES } from "../shared/constants.js";
 
 // Generate whatsapp link including brand page and short link
 export const generateLink = async (req, res, next) => {
@@ -33,17 +34,12 @@ export const generateLink = async (req, res, next) => {
 
     // Find user by user id
     const user = await userSchema.findById(userId);
-    if (!user) return next(new AppError("User not found", 404));
+    if (!user) return next(new AppError(MESSAGES.USER_NOT_FOUND, 404));
 
     // Check the user is pro or not
     if (user.isPro) {
       if (!user.id) {
-        return next(
-          new AppError(
-            "You must become premium user for generate brand page link",
-            400
-          )
-        );
+        return next(new AppError(MESSAGES.MUST_BE_PRO, 400));
       }
 
       userIds = user.id;
@@ -70,7 +66,7 @@ export const generateLink = async (req, res, next) => {
       shortLink: newLink.shortLink,
     };
 
-    success(res, data, "Link generated successfully");
+    success(res, data, MESSAGES.LINK_CREATED);
   } catch (error) {
     next(error);
   }
