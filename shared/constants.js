@@ -15,6 +15,9 @@ export const MESSAGES = {
   // 🔗 Link
   LINK_CREATED: "Link generated successfully",
   LINK_DELETED: "Link deleting successfully",
+  LINK_COUNT: "Fetch the total link count",
+  LINK_PREVIOUS: "Previous links fetched",
+  LINK_LATEST: "Latest link and user details fetched successfully",
   LINK_NOT_FOUND: "Short link not found",
   MUST_BE_PRO: "You must become a premium user to generate a branded page link",
   LINK_UPDATED: "Link updated successfully",

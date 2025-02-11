@@ -123,7 +123,7 @@ export const deleteLink = async (req, res, next) => {
     if (!deletedLink) {
       return next(new AppError("Link not found", 404)); // Not found any link by the sluge throw error
     }
-    
+
     // send deleted response
     success(res, null, MESSAGES.LINK_DELETED);
   } catch (error) {
@@ -137,26 +137,74 @@ export const deleteLink = async (req, res, next) => {
 // Get count of generated links for admin
 export const getLinkCount = async (req, res, next) => {
   try {
-    
+    // Get total links count from the database
+    const totalLinks = await linkSchema.countDocuments();
+    // Send response
+    success(res, totalLinks, MESSAGES.LINK_COUNT);
   } catch (error) {
-    
+    next(error);
   }
-}
+};
 
-// Get previous links for users 
+// Get previous links for users
 export const getPreviousLinks = async (req, res, next) => {
   try {
-    
+    // Get user id from authentication
+    const userId = req.user.id;
+    // Find all links by user id
+    const links = await linkSchema.find({ userId });
+    // If not get any links throw error
+    if (!links) {
+      return next(new AppError("Not previous link not found", 404));
+    }
+    // Send response to client
+    success(res, links, MESSAGES.LINK_PREVIOUS);
   } catch (error) {
-    
+    next(error);
   }
-}
+};
 
 // Get latest link for brand page chat button
-export const getLatestLink = async (params) => {
+export const getLatestLink = async (req, res, next) => {
   try {
-    
+    const { userId } = req.params;
+    // Fetch latest link for user
+    const latestLink = await linkSchema
+      .findOne({ userId })
+      .sort({ createdAt: -1 });
+
+    if (!latestLink) {
+      // If link is not fount throw error
+      return next(new AppError("No link found for this user", 404));
+    }
+
+    // Fetch user details
+    const user = await userSchema
+      .findById(userId)
+      .select("name email userName isPro profileImg");
+
+    if (!user) {
+      // The user is not found throw error
+      return next(new AppError("User not found", 404));
+    }
+
+    // Store the datas to variable
+    const data = {
+      slug: latestLink.slug,
+      whatsappLink: latestLink.whatsappLink,
+      brandedPageUrl: latestLink.brandedPageUrl,
+      user: {
+        name: user.name,
+        email: user.email,
+        userName: user.userName,
+        isPro: user.isPro,
+        profileImg: user.profileImg,
+      },
+    };
+
+    // Send response to client
+    success(res, data, MESSAGES.LINK_LATEST);
   } catch (error) {
-    
+    next(error);
   }
-}
+};
