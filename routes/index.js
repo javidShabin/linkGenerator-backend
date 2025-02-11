@@ -4,6 +4,7 @@ import { router as userRoutes } from "../routes/user.routes.js";
 import { router as adminRoutes } from "../routes/admin.routes.js";
 import { router as linkRoutes } from "../routes/link.routes.js";
 import { router as qrRoutes } from "../routes/qr.routes.js";
+import { router as paymentRoutes } from "../routes/payment.routes.js";
 
 export const router = express.Router();
 
@@ -21,3 +22,6 @@ router.use("/link", linkRoutes);
 
 // QR code controlled routes
 router.use("/qr", qrRoutes);
+
+// Payment controlled routes
+router.use("/payment", paymentRoutes)

@@ -129,6 +129,7 @@ export const verifyOTP = async (req, res, next) => {
         userName: newUser.userName,
         email: newUser.email,
         role: newUser.role,
+        phone: newUser.phone,
         profileImg: newUser.profileImg || null,
       },
     });
@@ -192,6 +193,7 @@ export const loginUser = async (req, res, next) => {
         userName: isUser.userName,
         email: isUser.email,
         role: isUser.role,
+        phone: isUser.phone,
         profileImg: isUser.profileImg || null,
       },
     });
