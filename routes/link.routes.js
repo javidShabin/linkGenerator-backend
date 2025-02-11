@@ -4,9 +4,15 @@ import { authorize } from "../middlewares/authorize.middleware.js";
 import {
   deleteLink,
   generateLink,
+  getLatestLink,
+  getLinkCount,
+  getPreviousLinks,
   updateLink,
 } from "../controllers/link.controller.js";
 export const router = express.Router();
+
+// ********************************************************************
+// **************** Generate , Update, Delete ************************
 
 // Generate link route
 router.post(
@@ -31,3 +37,19 @@ router.delete(
   authorize("user", "pro"),
   deleteLink
 );
+
+// ***************************************************************
+// ****************** Links getting routes ************************
+
+// Link count route
+router.get("/get-link-count", authenticate, authorize("admin"), getLinkCount);
+
+router.get(
+  "/get-prev-links",
+  authenticate,
+  authorize("user", "pro"),
+  getPreviousLinks
+);
+
+// Latest link geting route
+router.get("/get-latest-link/:userId", getLatestLink);

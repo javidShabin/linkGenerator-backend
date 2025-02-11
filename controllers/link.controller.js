@@ -13,6 +13,9 @@ import { success } from "../shared/response.js";
 import { MESSAGES } from "../shared/constants.js";
 import { AppError } from "../utils/AppError.js";
 
+// ********************************************************************************
+// ************** Generate, Update, Delete ***************************************
+
 // Generate whatsapp link including brand page and short link
 export const generateLink = async (req, res, next) => {
   try {
@@ -127,3 +130,33 @@ export const deleteLink = async (req, res, next) => {
     next(error);
   }
 };
+
+// *******************************************************************************
+// ********************** Link geting controllers *********************************
+
+// Get count of generated links for admin
+export const getLinkCount = async (req, res, next) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
+// Get previous links for users 
+export const getPreviousLinks = async (req, res, next) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
+// Get latest link for brand page chat button
+export const getLatestLink = async (params) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
