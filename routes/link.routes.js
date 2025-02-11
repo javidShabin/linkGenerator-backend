@@ -7,6 +7,7 @@ import {
   getLatestLink,
   getLinkCount,
   getPreviousLinks,
+  trachLinkUsage,
   updateLink,
 } from "../controllers/link.controller.js";
 export const router = express.Router();
@@ -53,3 +54,8 @@ router.get(
 
 // Latest link geting route
 router.get("/get-latest-link/:userId", getLatestLink);
+
+// **********************************************************************
+// Track link usage
+
+router.get("/track-link/:slug", trachLinkUsage)

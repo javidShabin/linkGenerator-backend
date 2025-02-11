@@ -208,3 +208,27 @@ export const getLatestLink = async (req, res, next) => {
     next(error);
   }
 };
+
+// ******************** Track link usage **************************
+// Track link usage
+export const trachLinkUsage = async (req, res, next) => {
+  try {
+    // Destructer the slug from request params
+    const { slug } = req.params;
+    // Find the link using the slug
+    const link = await linkSchema.findOne({ slug });
+    // The link is not found throw error
+    if (!link) {
+      return next(new AppError("Link not found", 404));
+    }
+    // Increment the clicks count
+    link.clicks = (link.clicks || 0) + 1;
+    await link.save(); // save the count
+
+    let clicks = link.clicks;
+    // Send the response to client
+    success(res, clicks, MESSAGES.LINK_TRACK);
+  } catch (error) {
+    next(error);
+  }
+};
