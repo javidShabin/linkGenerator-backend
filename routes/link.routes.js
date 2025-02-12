@@ -1,8 +1,11 @@
 import express from "express";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
-import { upload } from "../middlewares/upload.middleware.js";
-import { generateLink, updateLink } from "../controllers/link.controller.js";
+import {
+  deleteLink,
+  generateLink,
+  updateLink,
+} from "../controllers/link.controller.js";
 export const router = express.Router();
 
 // Generate link route
@@ -19,4 +22,12 @@ router.put(
   authenticate,
   authorize("user", "pro"),
   updateLink
+);
+
+// Delete link route
+router.delete(
+  "/delete-link/:slug",
+  authenticate,
+  authorize("user", "pro"),
+  deleteLink
 );

@@ -107,3 +107,12 @@ export const updateLink = async (req, res, next) => {
     next(error)
   }
 }
+
+// Delete the link 
+export const deleteLink = async (req, res, next) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
