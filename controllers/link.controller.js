@@ -11,6 +11,7 @@ import linkSchema from "../models/link.model.js";
 import { linkGeneratingValidation } from "../validators/link.validation.js";
 import { success } from "../shared/response.js";
 import { MESSAGES } from "../shared/constants.js";
+import { AppError } from "../utils/AppError.js";
 
 // Generate whatsapp link including brand page and short link
 export const generateLink = async (req, res, next) => {
@@ -81,7 +82,7 @@ export const updateLink = async (req, res, next) => {
     const { phone, message, customSlug } = req.body;
     // Find the link by slug
     const existingLink = await linkSchema.findOne({ slug });
-     // Check if the link exists
+    // Check if the link exists
     if (!existingLink) {
       throw new AppError("Link is not found", 404);
     }
@@ -101,18 +102,28 @@ export const updateLink = async (req, res, next) => {
 
     // Save the updated link
     await existingLink.save();
-    // Send respose 
-    success(res, existingLink, MESSAGES.LINK_UPDATED)
+    // Send respose
+    success(res, existingLink, MESSAGES.LINK_UPDATED);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
-// Delete the link 
+// Delete the link
 export const deleteLink = async (req, res, next) => {
   try {
+    // Get the slug from request params
+    const { slug } = req.params;
+    // Find the link by slug
+    const deletedLink = await linkSchema.findOneAndDelete({ slug });
+
+    if (!deletedLink) {
+      return next(new AppError("Link not found", 404)); // Not found any link by the sluge throw error
+    }
     
+    // send deleted response
+    success(res, null, MESSAGES.LINK_DELETED);
   } catch (error) {
-    
+    next(error);
   }
-}
+};
