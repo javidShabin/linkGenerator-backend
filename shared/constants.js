@@ -16,6 +16,7 @@ export const MESSAGES = {
   LINK_CREATED: "Link generated successfully",
   LINK_NOT_FOUND: "Short link not found",
   MUST_BE_PRO: "You must become a premium user to generate a branded page link",
+  LINK_UPDATED: "Link updated successfully",
 
   // 📩 OTP
   OTP_SENDED: "OTP sent to your email successfully",
