@@ -39,9 +39,39 @@ export const getAllUser = async (req, res, next) => {
 };
 
 // TOggle usres profile active status
-export const toggleActiveStatus = async (req, res, next) => {
+export const toggleUserActiveStatus = async (req, res, next) => {
   try {
-  } catch (error) {}
+    const { userId } = req.params;
+
+    // Find the user
+    const user = await userSchema.findById(userId);
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+
+    // Toggle isActive and update
+    const updatedUser = await userSchema
+      .findByIdAndUpdate(
+        userId,
+        { isActive: !user.isActive },
+        { new: true, runValidators: true }
+      )
+      .select("_id isActive");
+
+    // Use success() utility to return response
+    return success(
+      res,
+      {
+        userId: updatedUser._id,
+        isActive: updatedUser.isActive,
+      },
+      `User has been ${
+        updatedUser.isActive ? "activated" : "deactivated"
+      } successfully`
+    );
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Delete the users profile (account)
