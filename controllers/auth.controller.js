@@ -195,7 +195,7 @@ export const loginUser = async (req, res, next) => {
     };
 
     // Send a response
-    success(res, user, "User created successfully");
+    success(res, user, "User logged in successfully");
   } catch (error) {
     next(error);
   }

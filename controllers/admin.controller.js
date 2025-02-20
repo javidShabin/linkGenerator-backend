@@ -77,5 +77,19 @@ export const toggleUserActiveStatus = async (req, res, next) => {
 // Delete the users profile (account)
 export const deleteUserAccount = async (req, res, next) => {
   try {
-  } catch (error) {}
+    const { userId } = req.params;
+
+    // Check if user exists
+    const user = await userSchema.findById(userId);
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+
+    // Delete the user
+    await userSchema.findByIdAndDelete(userId);
+
+    return success(res, null, "User account deleted successfully");
+  } catch (error) {
+    next(error);
+  }
 };
