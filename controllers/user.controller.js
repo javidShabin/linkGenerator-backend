@@ -70,7 +70,7 @@ export const updateUserProfile = async (req, res, next) => {
 // Check user authectioncation
 export const checkUser = async (req, res, next) => {
   try {
-    // Check the user id is present 
+    // Check the user id is present
     if (!req.user || !req.user.id) {
       return next(new AppError("User not authorized", 401));
     }
@@ -86,8 +86,26 @@ export const checkUser = async (req, res, next) => {
     next(err);
   }
 };
+
 // Check user is premium user
-export const userIsPro = async (req, res, next) => {
+export const isProUser = async (req, res, next) => {
   try {
-  } catch (error) {}
+    // Check the user id is present
+    if (!req.user) {
+      return next(new AppError("User not authorized", 401));
+    }
+    // Fetch full user data (excluding password)
+    const user = await userSchema.findById(req.user.id).select("-password");
+    if (!user) {
+      return next(new AppError("User not pro", 404));
+    }
+    // Check the user is pro or normal
+    if (user.isPro !== true) {
+      return next(new AppError("You are not a premium user", 403));
+    }
+    // If user authorized
+    success(res, user, "Your a premium user");
+  } catch (error) {
+    next(error);
+  }
 };

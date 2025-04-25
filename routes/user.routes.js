@@ -4,6 +4,7 @@ import { authorize } from "../middlewares/authorize.middleware.js";
 import {
   checkUser,
   getUserProfile,
+  isProUser,
   updateUserProfile,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/upload.middleware.js";
@@ -31,8 +32,16 @@ router.patch(
 
 // Check user authentication
 router.get(
-  "/check-user",
+  "/check-user-auth",
   authenticate,
   authorize("user", "pro", "admin"),
   checkUser
+);
+
+// Check user user is premium user or normal user
+router.get(
+  "/check-user-pro",
+  authenticate,
+  authorize("user", "pro"),
+  isProUser
 );
