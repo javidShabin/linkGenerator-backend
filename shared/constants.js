@@ -41,4 +41,7 @@ export const MESSAGES = {
   INVALID_FORMAT_EMAIL: "Invalid email format",
   INVALID_FORMAT_PHONE: "Invalid phone number",
   PASSWORD_VALIDATION: "Password must be 6–16 characters, include uppercase, lowercase, number, and special character",
+
+  // QR code
+  QR_SUCCESS: "QR code generated successfully",
 };

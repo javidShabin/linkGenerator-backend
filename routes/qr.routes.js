@@ -7,6 +7,7 @@ import {
   getQrCounts,
   updateQrcode,
 } from "../controllers/qr.controller.js";
+import { upload } from "../middlewares/upload.middleware.js";
 export const router = express.Router();
 
 // *******************************************************************
@@ -14,7 +15,7 @@ export const router = express.Router();
 
 // Generate QR code
 router.post(
-  "/generate-qr",
+  "/generate-qr/:slug",
   authenticate,
   authorize("user", "pro"),
   generateQrcode
@@ -22,9 +23,10 @@ router.post(
 
 // Update the QR code
 router.patch(
-  "/update-qr",
+  "/update-qr/:id",
   authenticate,
   authorize("user", "pro"),
+  upload.single("logo"),
   updateQrcode
 );
 
