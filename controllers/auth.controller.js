@@ -9,6 +9,7 @@ import { generateToken } from "../utils/generateToken.js";
 import { comparePassword, hashPassword } from "../utils/hashPassword.js";
 import { generateOTP } from "../utils/otpGenerator.js";
 import { sendEmail } from "../services/sendEmail.js";
+import { success } from "../shared/response.js";
 
 // *********** Signup and login functions ****************
 
@@ -33,6 +34,25 @@ export const OTPgenerating = async (req, res, next) => {
       subject: "Your OTP for Registration",
       text: `Your OTP is ${OTP}. Please verify to complete your registration.`,
     });
+    // Hash the user password 10 round salting using bcrypt
+    const hashedPassword = await hashPassword(password);
+    // Save or update temporary user data with OTP
+    await TempUser.findOneAndUpdate(
+      { email },
+      {
+        email,
+        password: hashedPassword,
+        otp: OTP, // store OTP
+        otpExpiresAt: Date.now() + 10 * 60 * 1000, // OTP expires in 10 minutes
+        userName, // Store name
+        phone, // Store phone
+        role,
+      },
+      { upsert: true, new: true } // Create new or update existing
+    );
+
+    // If user created the send success response
+    success(res, { email }, "OTP sent to your email successfully");
   } catch (error) {
     next(error);
   }
