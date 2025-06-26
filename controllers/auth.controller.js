@@ -117,7 +117,8 @@ export const verifyOTP = async (req, res, next) => {
 
     await tempUser.deleteOne({ email }); // cleanup temp user
 
-    const user = { // User details
+    const user = {
+      // User details
       id: newUser._id,
       userName: newUser.userName,
       email: newUser.email,
@@ -134,7 +135,34 @@ export const verifyOTP = async (req, res, next) => {
 // Login user compare password
 export const loginUser = async (req, res, next) => {
   try {
-  } catch (error) {}
+    // Validate the user email and password
+    userLoginValidation(req.body);
+    // Destructure email and password from request body
+    const { email, password } = req.body;
+    // Check the user is singuped using the email
+    const isUser = await userSchema.findOne({ email });
+    // User not signuped throw error
+    if (!isUser) {
+      return next(
+        new AppError(
+          "No account found with this email. Please sign up first.",
+          400
+        )
+      );
+    }
+
+    // Check if user is blocked
+    if (isUser.isActive === false) {
+      return res.status(403).json({
+        success: false,
+        message: "Account is blocked. Contact support.",
+        redirect:
+          "https://link-generator-frontend-rust.vercel.app/account-blocked",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Logout user remove the token
