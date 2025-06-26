@@ -160,6 +160,38 @@ export const loginUser = async (req, res, next) => {
           "https://link-generator-frontend-rust.vercel.app/account-blocked",
       });
     }
+    // Compare the password
+    const passwordIsMatch = await comparePassword(password, isUser.password);
+    if (!passwordIsMatch) {
+      return next(new AppError("Invalid email or password", 401));
+    }
+    // Save the last login time
+    isUser.lastLogin = new Date();
+    await isUser.save();
+
+    // Generate the user token by JWT using id , email and role
+    const token = generateToken({
+      id: isUser.id,
+      email: isUser.email,
+      role: isUser.role,
+    });
+    res.cookie("userToken", token, {
+      // Store the token in cookie
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    const user = {
+      // User details
+      id: isUser._id,
+      userName: isUser.userName,
+      email: isUser.email,
+      role: isUser.role,
+    };
+
+    // Send a response
+    success(res, user, "User created successfully");
   } catch (error) {
     next(error);
   }
