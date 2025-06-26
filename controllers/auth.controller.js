@@ -18,12 +18,12 @@ export const OTPgenerating = async (req, res, next) => {
   try {
     // Validate the user data first
     userSignupValidation(req.body);
-    // Destructer user details from request body
+    // Destructure user details from request body
     const { userName, email, password, phone, role } = req.body;
     // Find the user by email
     const isUserExist = await userSchema.findOne({ email });
     if (isUserExist) {
-      return next(new AppError("User alreadyexist", 404));
+      return next(new AppError("User already exist", 404));
     }
 
     // Generate 6 degit OTP
@@ -36,6 +36,9 @@ export const OTPgenerating = async (req, res, next) => {
     });
     // Hash the user password 10 round salting using bcrypt
     const hashedPassword = await hashPassword(password);
+    
+    const OTP_VALIDITY_DURATION = 10 * 60 * 1000; // 10 minutes
+    const OTP_EXPIRE_TIME = Date.now() + OTP_VALIDITY_DURATION;
     // Save or update temporary user data with OTP
     await TempUser.findOneAndUpdate(
       { email },
@@ -43,7 +46,7 @@ export const OTPgenerating = async (req, res, next) => {
         email,
         password: hashedPassword,
         otp: OTP, // store OTP
-        otpExpiresAt: Date.now() + 10 * 60 * 1000, // OTP expires in 10 minutes
+        otpExpiresAt: OTP_EXPIRE_TIME, // OTP expires in 10 minutes
         userName, // Store name
         phone, // Store phone
         role,
