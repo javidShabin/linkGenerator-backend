@@ -67,15 +67,67 @@ export const OTPgenerating = async (req, res, next) => {
 export const verifyOTP = async (req, res, next) => {
   try {
     // Destructure email and OTP from request body
-     const { email, otp } = req.body;
-     if (!email || !otp) {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
       return next(new AppError("Email and OTP are required", 400));
-     }
-     // Find the temporary user from database using email
-     const tempUser = await TempUser.findOne({ email });
-     console.log(tempUser)
+    }
+    // Find the temporary user from database using email
+    const tempUser = await TempUser.findOne({ email });
+
+    // Check the temporary user is present or not
+    if (!tempUser) {
+      return next(new AppError("User not found", 404));
+    }
+
+    // Check the OTP is valid or not
+    if (tempUser.otp !== otp) {
+      return next(new AppError("Invalid", 400));
+    }
+
+    // Check the OTP expire or not (10 minutes)
+    if (tempUser.otpExpiresAt < Date.now()) {
+      return next(new AppError("OTP has expired", 400));
+    }
+
+    // Create new user
+    const newUser = new userSchema({
+      userName: tempUser.userName,
+      phone: tempUser.phone,
+      email: tempUser.email,
+      password: tempUser.password,
+      role: tempUser.role,
+    });
+
+    // Save the details in database
+    await newUser.save();
+
+    // Generate the token using JWT
+    const token = generateToken({
+      id: newUser._id,
+      email: newUser.email,
+      role: newUser.role,
+    });
+
+    // Save the token in cookie
+    res.cookie("userToken", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    await tempUser.deleteOne({ email }); // cleanup temp user
+
+    const user = { // User details
+      id: newUser._id,
+      userName: newUser.userName,
+      email: newUser.email,
+      role: newUser.role,
+    };
+
+    // Send a response
+    success(res, user, "User created successfully");
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
