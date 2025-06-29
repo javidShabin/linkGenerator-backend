@@ -132,6 +132,7 @@ export const verifyOTP = async (req, res, next) => {
   }
 };
 
+// *********** Login user ****************
 // Login user compare password
 export const loginUser = async (req, res, next) => {
   try {
