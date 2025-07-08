@@ -20,7 +20,6 @@ server.use(
 server.use(express.json());
 server.use(cookieParser());
 server.use(passport.initialize());
-server.use(globalErrorHandler)
 
 server.get("/", (req, res) => {
   res.send("Server is up and running!");
@@ -28,6 +27,9 @@ server.get("/", (req, res) => {
 
 // Entry route
 server.use("/api/v1", v1Router);
+
+// GLobal error handler
+server.use(globalErrorHandler)
 
 // Database connection function
 dbConnection()

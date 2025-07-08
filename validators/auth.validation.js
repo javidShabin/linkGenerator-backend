@@ -1,4 +1,3 @@
-
 // ********************** Authentication validations ***************************
 
 import { AppError } from "../utils/AppError.js";
@@ -28,7 +27,10 @@ export const userSignupValidation = (data) => {
   }
   // Validate the password strength
   if (!regex.password.test(password)) {
-    throw new AppError("Password must be 6–16 characters, include uppercase, lowercase, number, and special character", 400);
+    throw new AppError(
+      "Password must be 6–16 characters, include uppercase, lowercase, number, and special character",
+      400
+    );
   }
 };
 
@@ -40,3 +42,27 @@ export const userLoginValidation = (data) => {
     throw new AppError("Email and password is required", 400);
   }
 };
+
+// Validation for resetting a new password
+export const resetPasswordValidation = (data) => {
+  // Destructure email, OTP, newPassword, and confirmPassword from data
+  const { email, otp, newPassword, confirmPassword } = data;
+
+  // Check if all required fields are present
+  if (!email || !otp || !newPassword || !confirmPassword) {
+    throw new AppError("All fields are required", 400);
+  }
+
+  // Check if new password matches confirm password
+  if (newPassword !== confirmPassword) {
+    throw new AppError("Password and confirm password do not match", 400);
+  }
+
+  // Validate email format using regex
+  if (!regex.email.test(email)) {
+    throw new AppError("Invalid email format", 400);
+  }
+
+ 
+};
+

@@ -1,4 +1,5 @@
 import {
+  resetPasswordValidation,
   userLoginValidation,
   userSignupValidation,
 } from "../validators/auth.validation.js";
@@ -268,5 +269,11 @@ export const generateForgotPasswordOtp = async (req, res, next) => {
 // Verify the OTP and change update new password
 export const verifyForgotPasswordOtp = async (req, res, next) => {
   try {
-  } catch (error) {}
+    
+    resetPasswordValidation(req.body);
+    
+  } catch (err) {
+    
+    next(err);
+  }
 };

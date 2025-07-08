@@ -36,4 +36,4 @@ router.delete(
 router.post("/forgot-password/otp", generateForgotPasswordOtp)
 
 // Verifying the password changing OTP route
-router.put("/forgot-password/reset", verifyForgotPasswordOtp)
+router.post("/forgot-password/reset", verifyForgotPasswordOtp)
