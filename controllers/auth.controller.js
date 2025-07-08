@@ -201,5 +201,15 @@ export const loginUser = async (req, res, next) => {
 // Logout user remove the token
 export const logOutUser = async (req, res, next) => {
   try {
-  } catch (error) {}
+    // Clear the userToken cookie
+    res.clearCookie("userToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    // Use your success response utility
+    success(res, null, "Logged out successfully");
+  } catch (error) {
+    next(error)
+  }
 };
