@@ -11,7 +11,8 @@ import { generateOTP } from "../utils/otpGenerator.js";
 import { sendEmail } from "../services/sendEmail.js";
 import { success } from "../shared/response.js";
 
-// *********** Signup and login functions ****************
+// ***************************** Signup and login functions ********************************
+// ******************************************************************************************
 
 // *********** Generate OTP ****************
 // Generate OTP for user signup
@@ -213,3 +214,27 @@ export const logOutUser = async (req, res, next) => {
     next(error)
   }
 };
+
+
+// ************************************ Password functionalities***********************************
+// *********************************************************************************************
+
+// *************** OTP for password********************
+// Generate OTP for password changing
+export const generateForgotPasswordOtp = async (req, res, next) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
+// ********************Verifiying the OTP *************************
+// Verify the OTP and change update new password
+export const verifyForgotPasswordOtp = async (req, res, next) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}

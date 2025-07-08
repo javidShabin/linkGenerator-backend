@@ -1,8 +1,10 @@
 import express from "express";
 import {
+  generateForgotPasswordOtp,
   loginUser,
   logOutUser,
   OTPgenerating,
+  verifyForgotPasswordOtp,
   verifyOTP,
 } from "../controllers/auth.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
@@ -27,3 +29,11 @@ router.delete(
   authorize("user", "pro", "admin"),
   logOutUser
 );
+
+// ********************* Password routes **********************
+
+// Route for OTP genreating for password changing
+router.post("/forgot-password/otp", generateForgotPasswordOtp)
+
+// Verifying the password changing OTP route
+router.put("/forgot-password/reset", verifyForgotPasswordOtp)
