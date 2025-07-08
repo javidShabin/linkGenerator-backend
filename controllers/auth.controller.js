@@ -10,6 +10,7 @@ import { comparePassword, hashPassword } from "../utils/hashPassword.js";
 import { generateOTP } from "../utils/otpGenerator.js";
 import { sendEmail } from "../services/sendEmail.js";
 import { success } from "../shared/response.js";
+import { regex } from "../shared/regex.js";
 
 // ***************************** Signup and login functions ********************************
 // ******************************************************************************************
@@ -211,10 +212,9 @@ export const logOutUser = async (req, res, next) => {
     // Use your success response utility
     success(res, null, "Logged out successfully");
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
-
 
 // ************************************ Password functionalities***********************************
 // *********************************************************************************************
@@ -223,18 +223,50 @@ export const logOutUser = async (req, res, next) => {
 // Generate OTP for password changing
 export const generateForgotPasswordOtp = async (req, res, next) => {
   try {
-    
+    // Destructure the email from request body
+    const { email } = req.body;
+    // Check email is present or not
+    if (!email) {
+      return next(new AppError("Email is require", 400));
+    }
+    // Validate the email using regex
+    if (!regex.email.test(email)) {
+      return next(new AppError("Invalid email format", 400));
+    }
+    // Find user by email
+    const user = await userSchema.findOne({ email });
+    // throw error if not any user with the email
+    if (!user) {
+      return next(new AppError("User not found with this email", 404));
+    }
+    // Generate 6 degit OTP
+    const OTP = generateOTP();
+    // Send the OTP to user email
+    await sendEmail({
+      to: email,
+      subject: "OTP for Password Reset",
+      text: `Your OTP for resetting password is ${OTP}. It will expire in 10 minutes.`,
+    });
+    // Store the OTP and expire time in tempuser
+    await TempUser.findOneAndUpdate(
+      { email },
+      {
+        email,
+        OTP,
+        otpExpiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
+      },
+      { upsert: true, new: true }
+    );
+    // Send the response
+    success(res, { email }, "OTP sent to your email for password reset.");
   } catch (error) {
-    
+    next(error);
   }
-}
+};
 
 // ********************Verifiying the OTP *************************
 // Verify the OTP and change update new password
 export const verifyForgotPasswordOtp = async (req, res, next) => {
   try {
-    
-  } catch (error) {
-    
-  }
-}
+  } catch (error) {}
+};
