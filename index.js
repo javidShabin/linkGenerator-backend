@@ -1,10 +1,11 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express from "express"
-const server = express()
+import express from "express";
+const server = express();
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "passport";
+import { dbConnection } from "./configs/db.config.js";
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
@@ -18,11 +19,18 @@ server.use(express.json());
 server.use(cookieParser());
 server.use(passport.initialize());
 
-
 server.get("/", (req, res) => {
   res.send("Server is up and running!");
 });
 
-server.listen(() => {
-    console.log(`Server is running on port ${PORT}`);
-})
+// Database connection function
+dbConnection()
+  .then(() => {
+    console.log("Database Connected...!");
+    server.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+  });
