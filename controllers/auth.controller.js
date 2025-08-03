@@ -13,6 +13,7 @@ import { success } from "../shared/response.js";
 
 // *********** Signup and login functions ****************
 
+// *********** Generate OTP ****************
 // Generate OTP for user signup
 export const OTPgenerating = async (req, res, next) => {
   try {
@@ -36,7 +37,7 @@ export const OTPgenerating = async (req, res, next) => {
     });
     // Hash the user password 10 round salting using bcrypt
     const hashedPassword = await hashPassword(password);
-    
+
     const OTP_VALIDITY_DURATION = 10 * 60 * 1000; // 10 minutes
     const OTP_EXPIRE_TIME = Date.now() + OTP_VALIDITY_DURATION;
     // Save or update temporary user data with OTP
@@ -61,10 +62,21 @@ export const OTPgenerating = async (req, res, next) => {
   }
 };
 
+// *********** OTP verirification ****************
 // Verify the OTP and create new user
 export const verifyOTP = async (req, res, next) => {
   try {
-  } catch (error) {}
+    // Destructure email and OTP from request body
+     const { email, otp } = req.body;
+     if (!email || !otp) {
+      return next(new AppError("Email and OTP are required", 400));
+     }
+     // Find the temporary user from database using email
+     const tempUser = await TempUser.findOne({ email });
+     console.log(tempUser)
+  } catch (error) {
+    next(error)
+  }
 };
 
 // Login user compare password
