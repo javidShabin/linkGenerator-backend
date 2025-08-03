@@ -1,7 +1,7 @@
 
 // ********************** Authentication validations ***************************
 
-import { AppError } from "../utils/AppError";
+import { AppError } from "../utils/AppError.js";
 import { regex } from "../shared/regex.js";
 
 // User signup validation
