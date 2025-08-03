@@ -253,7 +253,7 @@ export const generateForgotPasswordOtp = async (req, res, next) => {
       { email },
       {
         email,
-        OTP,
+        otp: OTP,
         otpExpiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
       },
       { upsert: true, new: true }
@@ -266,14 +266,50 @@ export const generateForgotPasswordOtp = async (req, res, next) => {
 };
 
 // ********************Verifiying the OTP *************************
-// Verify the OTP and change update new password
+// Verify the OTP and update the new password
 export const verifyForgotPasswordOtp = async (req, res, next) => {
   try {
-    
+    // Validate request body fields
     resetPasswordValidation(req.body);
-    
+
+    // Destructure fields from request
+    const { email, otp, newPassword } = req.body;
+
+    // Find temporary user by email
+    const tempUser = await TempUser.findOne({ email });
+    if (!tempUser) {
+      return next(new AppError("OTP not found or already used", 404));
+    }
+    // Compare OTP
+    if (tempUser.otp !== otp) {
+      return next(new AppError("Invalid OTP", 400));
+    }
+
+    // Check if OTP expired
+    if (tempUser.otpExpiresAt < Date.now()) {
+      return next(new AppError("OTP has expired", 400));
+    }
+
+    // Hash the new password
+    const hashedPassword = await hashPassword(newPassword);
+
+    // Update user password
+    const updatedUser = await userSchema.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return next(new AppError("User not found", 404));
+    }
+
+    // Delete temporary OTP record
+    await TempUser.deleteOne({ email });
+
+    // Respond with success
+    success(res, null, "Password has been reset successfully.");
   } catch (err) {
-    
-    next(err);
+    next(err); // Forward to global error handler
   }
 };
