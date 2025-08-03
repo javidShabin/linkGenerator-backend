@@ -5,6 +5,7 @@ const server = express();
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "passport";
+import {router as v1Router} from "./routes/index.js"
 import { dbConnection } from "./configs/db.config.js";
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
 const PORT = process.env.PORT || 3000;
@@ -24,6 +25,9 @@ server.use(globalErrorHandler)
 server.get("/", (req, res) => {
   res.send("Server is up and running!");
 });
+
+// Entry route
+server.use("/api/v1", v1Router);
 
 // Database connection function
 dbConnection()
