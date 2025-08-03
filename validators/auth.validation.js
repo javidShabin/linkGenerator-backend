@@ -2,6 +2,7 @@
 // ********************** Authentication validations ***************************
 
 import { AppError } from "../utils/AppError";
+import { regex } from "../shared/regex.js";
 
 // User signup validation
 export const userSignupValidation = (data) => {
@@ -15,6 +16,19 @@ export const userSignupValidation = (data) => {
   // Compare the password and confirmPassword
   if (password !== confirmPassword) {
     throw new AppError("Password and confirm password do not match", 400);
+  }
+
+  // Email validation by the regex
+  if (!regex.email.test(email)) {
+    throw new AppError("Invalid email format", 400);
+  }
+  // Phone number validation
+  if (!regex.phone.test(phone)) {
+    throw new AppError("Invalid phone number", 400);
+  }
+  // Validate the password strength
+  if (!regex.password.test(password)) {
+    throw new AppError("Password must be 6–16 characters, include uppercase, lowercase, number, and special character", 400);
   }
 };
 
