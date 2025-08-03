@@ -6,6 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import { dbConnection } from "./configs/db.config.js";
+import { globalErrorHandler } from "./middlewares/error.middleware.js";
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
@@ -18,6 +19,7 @@ server.use(
 server.use(express.json());
 server.use(cookieParser());
 server.use(passport.initialize());
+server.use(globalErrorHandler)
 
 server.get("/", (req, res) => {
   res.send("Server is up and running!");
