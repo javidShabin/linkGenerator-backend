@@ -8,3 +8,5 @@ import { AppError } from "../utils/AppError.js";
 import { generateToken } from "../utils/generateToken.js";
 import { comparePassword, hashPassword } from "../utils/hashPassword.js";
 import { sendEmail } from "../services/sendEmail.js";
+
+// *********** Signup and login functions ****************
