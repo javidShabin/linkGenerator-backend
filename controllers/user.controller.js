@@ -27,25 +27,43 @@ export const getUserProfile = async (req, res, next) => {
   }
 };
 
-
 // Update user Profile
 export const updateUserProfile = async (req, res, next) => {
   try {
     // Get user id from authentication
-     const userId = req.user.id;
-     // Destructure the datas for editing
+    const userId = req.user.id;
+    // Destructure the datas for editing
     const { userName, email, phone } = req.body;
     // Prepare the data to update
     const updateData = { userName, email, phone };
     // Check if user exists
     const user = await userSchema.findById(userId);
     if (!user) {
-      return next(new AppError("User not found", 404))
+      return next(new AppError("User not found", 404));
     }
 
-    res.send(user, req.file)
+    // If provide any image file then upload the file to cloudinary
+    if (req.file) {
+      // Upload the file then store to variable
+      const uploadResult = await uploadToCloudinary(req.file.path);
+      if (!uploadResult.success) {
+        return res.status(500).json({
+          success: false,
+          message: uploadResult.message,
+          error: uploadResult.error,
+        });
+      }
+      // Assign the data to insted of user profile image
+      updateData.profileImg = uploadResult.url;
+    }
+    // Update user with new data
+    const updatedUser = await userSchema.findByIdAndUpdate(userId, updateData, {
+      new: true,
+    });
+    // Send the response
+    success(res, updatedUser, "User profile updated successfully");
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
