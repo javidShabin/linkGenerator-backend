@@ -31,7 +31,22 @@ export const getUserProfile = async (req, res, next) => {
 // Update user Profile
 export const updateUserProfile = async (req, res, next) => {
   try {
-  } catch (error) {}
+    // Get user id from authentication
+     const userId = req.user.id;
+     // Destructure the datas for editing
+    const { userName, email, phone } = req.body;
+    // Prepare the data to update
+    const updateData = { userName, email, phone };
+    // Check if user exists
+    const user = await userSchema.findById(userId);
+    if (!user) {
+      return next(new AppError("User not found", 404))
+    }
+
+    res.send(user, req.file)
+  } catch (error) {
+    next(error)
+  }
 };
 
 // Check user authectioncation
