@@ -8,6 +8,7 @@ import { uploadToCloudinary } from "../services/cloudinaryUpload.js";
 // Get user profile by id
 export const getUserProfile = async (req, res, next) => {
   try {
+    
   } catch (error) {}
 };
 
