@@ -70,9 +70,22 @@ export const updateUserProfile = async (req, res, next) => {
 // Check user authectioncation
 export const checkUser = async (req, res, next) => {
   try {
-  } catch (error) {}
+    // Check the user id is present 
+    if (!req.user || !req.user.id) {
+      return next(new AppError("User not authorized", 401));
+    }
+    // Find the user by user id
+    const user = await userSchema.findById(req.user.id).select("-password");
+    // Throw error if not any user with id
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+    // Send respsoer
+    return success(res, user, "User authorized");
+  } catch (err) {
+    next(err);
+  }
 };
-
 // Check user is premium user
 export const userIsPro = async (req, res, next) => {
   try {

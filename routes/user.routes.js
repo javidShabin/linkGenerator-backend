@@ -2,6 +2,7 @@ import express from "express";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
 import {
+  checkUser,
   getUserProfile,
   updateUserProfile,
 } from "../controllers/user.controller.js";
@@ -26,4 +27,12 @@ router.patch(
   authorize("user", "pro", "admin"),
   upload.single("profileImg"),
   updateUserProfile
+);
+
+// Check user authentication
+router.get(
+  "/check-user",
+  authenticate,
+  authorize("user", "pro", "admin"),
+  checkUser
 );
