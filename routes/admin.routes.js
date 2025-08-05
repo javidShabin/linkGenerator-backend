@@ -9,6 +9,8 @@ export const router = express.Router();
 
 // Get users details function
 router.get("/user-details", authenticate, authorize("admin"), getAllUser);
+
+// Update user profile status active and deactivate
 router.put(
   "/toggle-active/:userId",
   authenticate,
