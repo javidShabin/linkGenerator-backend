@@ -1,11 +1,15 @@
-import express from "express"
-import {router as authRoutes} from "../routes/auth.routes.js"
-import { router as userRoutes } from "../routes/user.routes.js"
+import express from "express";
+import { router as authRoutes } from "../routes/auth.routes.js";
+import { router as userRoutes } from "../routes/user.routes.js";
+import { router as adminRoutes } from "../routes/admin.routes.js";
 
-export const router = express.Router()
+export const router = express.Router();
 
 // Authentication routes
-router.use("/auth", authRoutes)
+router.use("/auth", authRoutes);
 
-// Profile routes 
-router.use("/user", userRoutes)
+// Profile routes
+router.use("/user", userRoutes);
+
+// Admin controlled routes
+router.use("/admin", adminRoutes);
