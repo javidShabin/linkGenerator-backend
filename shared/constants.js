@@ -4,6 +4,7 @@ export const MESSAGES = {
   LOGOUT_SUCCESS: "Logged out successfully",
   INVALID_CREDENTIALS: "Invalid email or password",
   ACCOUNT_NOT_FOUND: "No account found with this email. Please sign up first.",
+  ALL_FIELD_REQUIRED: "All fields are required",
 
   // 👤 User
   CREATED: "User created successfully",
@@ -25,9 +26,13 @@ export const MESSAGES = {
 
   // 🔒 Password
   PASSWORD_CHANGED: "Password has been reset successfully.",
+  PASSWORD_NO_MATCH: "Password and confirm password do not match",
+
 
   // 📋 Validation
   PHONE_REQUIRED: "Phone number is required",
   MESSAGE_REQUIRED: "Message is required",
-  INVALID_FORMAT: "Invalid email format",
+  INVALID_FORMAT_EMAIL: "Invalid email format",
+  INVALID_FORMAT_PHONE: "Invalid phone number",
+  PASSWORD_VALIDATION: "Password must be 6–16 characters, include uppercase, lowercase, number, and special character",
 };

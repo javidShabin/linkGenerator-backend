@@ -2,6 +2,7 @@
 
 import { AppError } from "../utils/AppError.js";
 import { regex } from "../shared/regex.js";
+import { MESSAGES } from "../shared/constants.js";
 
 // User signup validation
 export const userSignupValidation = (data) => {
@@ -9,28 +10,25 @@ export const userSignupValidation = (data) => {
   const { userName, email, password, confirmPassword, phone } = data;
   // Check the required fileds are present or not
   if (!userName || !email || !password || !confirmPassword || !phone) {
-    throw new AppError("All fields are required", 400);
+    throw new AppError(MESSAGES.ALL_FIELD_REQUIRED, 400);
   }
 
   // Compare the password and confirmPassword
   if (password !== confirmPassword) {
-    throw new AppError("Password and confirm password do not match", 400);
+    throw new AppError(MESSAGES.PASSWORD_NO_MATCH, 400);
   }
 
   // Email validation by the regex
   if (!regex.email.test(email)) {
-    throw new AppError("Invalid email format", 400);
+    throw new AppError(MESSAGES.INVALID_FORMAT_EMAIL, 400);
   }
   // Phone number validation
   if (!regex.phone.test(phone)) {
-    throw new AppError("Invalid phone number", 400);
+    throw new AppError(MESSAGES.INVALID_FORMAT_PHONE, 400);
   }
   // Validate the password strength
   if (!regex.password.test(password)) {
-    throw new AppError(
-      "Password must be 6–16 characters, include uppercase, lowercase, number, and special character",
-      400
-    );
+    throw new AppError(MESSAGES.PASSWORD_VALIDATION, 400);
   }
 };
 
@@ -50,19 +48,16 @@ export const resetPasswordValidation = (data) => {
 
   // Check if all required fields are present
   if (!email || !otp || !newPassword || !confirmPassword) {
-    throw new AppError("All fields are required", 400);
+    throw new AppError(MESSAGES>ALL_FIELD_REQUIRED, 400);
   }
 
   // Check if new password matches confirm password
   if (newPassword !== confirmPassword) {
-    throw new AppError("Password and confirm password do not match", 400);
+    throw new AppError(MESSAGES.PASSWORD_NO_MATCH, 400);
   }
 
   // Validate email format using regex
   if (!regex.email.test(email)) {
-    throw new AppError("Invalid email format", 400);
+    throw new AppError(MESSAGES.INVALID_FORMAT_EMAIL, 400);
   }
-
- 
 };
-
