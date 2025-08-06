@@ -114,23 +114,19 @@ export const verifyOTP = async (req, res, next) => {
 
     // Save the token in cookie
     res.cookie("userToken", token, {
+      // Store the token in cookie
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      sameSite: "lax",
     });
 
     await tempUser.deleteOne({ email }); // cleanup temp user
-
-    const user = {
-      // User details
-      id: newUser._id,
-      userName: newUser.userName,
-      email: newUser.email,
-      role: newUser.role,
-    };
-
-    // Send a response
-    success(res, user, MESSAGES.CREATED);
+    // Send the response to client
+    res.status(201).json({
+      success: true,
+      message: "User loggined successfully",
+      user: newUser,
+    });
   } catch (error) {
     next(error);
   }
@@ -178,20 +174,16 @@ export const loginUser = async (req, res, next) => {
     res.cookie("userToken", token, {
       // Store the token in cookie
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      sameSite: "lax",
     });
 
-    const user = {
-      // User details
-      id: isUser._id,
-      userName: isUser.userName,
-      email: isUser.email,
-      role: isUser.role,
-    };
-
-    // Send a response
-    success(res, user, MESSAGES.LOGIN_SUCCESS);
+    // Send the response to client
+    res.status(201).json({
+      success: true,
+      message: "User loggined successfully",
+      user: isUser,
+    });
   } catch (error) {
     next(error);
   }
@@ -203,8 +195,8 @@ export const logOutUser = async (req, res, next) => {
     // Clear the userToken cookie
     res.clearCookie("userToken", {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      sameSite: "lax",
     });
     // Use your success response utility
     success(res, null, MESSAGES.LOGOUT_SUCCESS);
