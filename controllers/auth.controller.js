@@ -153,7 +153,8 @@ export const loginUser = async (req, res, next) => {
         success: false,
         message: "Account is blocked. Contact support.",
         redirect:
-          "https://link-generator-frontend-rust.vercel.app/account-blocked",
+        "http://localhost:3000/account-blocked"
+          // "https://link-generator-frontend-rust.vercel.app/account-blocked",
       });
     }
     // Compare the password
