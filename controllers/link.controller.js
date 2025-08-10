@@ -1,6 +1,5 @@
 // *************************************************************
 // ****************** Whatsapp link generating controllers *****************
-
 import {
   generateShortLink,
   generateSlug,
@@ -145,6 +144,25 @@ export const getLinkCount = async (req, res, next) => {
     next(error);
   }
 };
+
+
+// Get link counts by user
+export const getLinkCountByUser = async (req, res, next) => {
+  try {
+    // Get user id from authentication
+    const userId = req.user.id;
+
+    // Count the links created by this user
+    const count = await linkSchema.countDocuments({userId });
+
+    // Send the count in response
+    success(res, count, "Get link count by user")
+  } catch (error) {
+    // Pass error to error handling middleware
+    next(error);
+  }
+};
+
 
 // Get previous links for users
 export const getPreviousLinks = async (req, res, next) => {

@@ -6,6 +6,7 @@ import {
   generateLink,
   getLatestLink,
   getLinkCount,
+  getLinkCountByUser,
   getPreviousLinks,
   trachLinkUsage,
   updateLink,
@@ -44,6 +45,9 @@ router.delete(
 
 // Link count route
 router.get("/get-link-count", authenticate, authorize("admin"), getLinkCount);
+
+// Link count route for user
+router.get("/get-link-count-user", authenticate, authorize("user", "pro"), getLinkCountByUser)
 
 router.get(
   "/get-prev-links",
