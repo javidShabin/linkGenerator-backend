@@ -125,7 +125,12 @@ export const verifyOTP = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "User loggined successfully",
-      user: newUser,
+      user: {
+        userName: newUser.userName,
+        email: newUser.email,
+        role: newUser.role,
+        profileImg: newUser.profileImg || null,
+      },
     });
   } catch (error) {
     next(error);
@@ -183,7 +188,12 @@ export const loginUser = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "User loggined successfully",
-      user: isUser,
+      user: {
+        userName: isUser.userName,
+        email: isUser.email,
+        role: isUser.role,
+        profileImg: isUser.profileImg || null,
+      },
     });
   } catch (error) {
     next(error);

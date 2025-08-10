@@ -94,8 +94,10 @@ export const isProUser = async (req, res, next) => {
     if (!req.user) {
       return next(new AppError("User not authorized", 401));
     }
-    // Fetch full user data (excluding password)
-    const user = await userSchema.findById(req.user.id).select("-password");
+    // Fetch full user data 
+    const user = await userSchema
+      .findById(req.user.id)
+      .select("userName email role profileImg isPro");
     if (!user) {
       return next(new AppError("User not pro", 404));
     }
