@@ -1,7 +1,11 @@
 import express from "express";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
-import { createCheckoutSession } from "../controllers/payment.controller.js";
+import {
+  createCheckoutSession,
+  getAllPaymentDetails,
+  getStripeSessionDetails,
+} from "../controllers/payment.controller.js";
 
 export const router = express.Router();
 
@@ -14,5 +18,17 @@ router.post(
 );
 
 // Get the session status by session id
+router.get(
+  "/session/:sessionId",
+  authenticate,
+  authorize("user", "pro"),
+  getStripeSessionDetails
+);
 
 // Get all payments
+router.get(
+  "/get-payments",
+  authenticate,
+  authorize("admin"),
+  getAllPaymentDetails
+);

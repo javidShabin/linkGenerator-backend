@@ -67,3 +67,66 @@ export const createCheckoutSession = async (req, res, next) => {
     next(err);
   }
 };
+
+// Get the session details
+export const getStripeSessionDetails = async (req, res, next) => {
+  try {
+    // Fetch session from Stripe using sessionId from URL
+    const session = await stripe.checkout.sessions.retrieve(
+      req.params.sessionId
+    );
+
+    // Validate session first
+    if (!session || session.payment_status !== "paid") {
+      throw new AppError("Invalid or unpaid session.", 400);
+    }
+
+    // Extract metadata
+    const userId = session.metadata?.userId;
+    const plan = session.metadata?.plan;
+
+    // 1. Update payment record
+    const existingPayment = await paymentSchema.findOneAndUpdate(
+      { sessionId: session.id },
+      { status: true }, // mark payment as successful
+      { new: true }
+    );
+
+    // 2. Update user isPro status
+    if (userId) {
+      await userSchema.findByIdAndUpdate(userId, { isPro: true, role: "pro" });
+    }
+
+    // 3. Respond with payment details
+    res.status(200).json({
+      amount: session.amount_total / 100,
+      currency: session.currency,
+      status: session.payment_status,
+      plan: plan,
+      paymentUpdated: existingPayment ? true : false,
+    });
+  } catch (err) {
+    next(err);
+    console.error("Stripe session fetch failed:", err.message);
+  }
+};
+
+// Get all payment details
+export const getAllPaymentDetails = async (req, res, next) => {
+  try {
+    const getAllPayments = await paymentSchema
+      .find({})
+      .populate("userId", " email userName");
+
+    if (!getAllPayments || getAllPayments.length === 0) {
+      throw new AppError("Payment details not available", 404);
+    }
+
+    res.status(200).json({
+      message: "Payment details fetched",
+      data: getAllPayments,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
