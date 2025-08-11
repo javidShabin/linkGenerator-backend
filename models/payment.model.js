@@ -15,9 +15,8 @@ const paymentSchema = new mongoose.Schema(
     amount: Number,
     currency: String,
     status: String,
-    plan: {
+     plan: {
       type: String,
-      enum: ["pro-plan", "one-time"],
       required: true,
     },
   },
