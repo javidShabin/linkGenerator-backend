@@ -250,3 +250,18 @@ export const trachLinkUsage = async (req, res, next) => {
     next(error);
   }
 };
+
+
+// Short link navigate to main link
+export const shortLink = async (req, res,next) => {
+  try {
+    // Get the slug from request params
+    const {slug} = req.params
+    // Find the link by slug
+    const link = await linkSchema.findOne({slug})
+    if (!link) return next(new AppError("Link is not found", 404))
+      res.redirect(link.whatsappLink);
+  } catch (error) {
+    next(error)
+  }
+}

@@ -8,6 +8,7 @@ import {
   getLinkCount,
   getLinkCountByUser,
   getPreviousLinks,
+  shortLink,
   trachLinkUsage,
   updateLink,
 } from "../controllers/link.controller.js";
@@ -63,3 +64,7 @@ router.get("/get-latest-link/:userId", getLatestLink);
 // Track link usage
 
 router.get("/track-link/:slug", trachLinkUsage)
+
+
+// Short link
+router.get("/s/:slug", shortLink)
