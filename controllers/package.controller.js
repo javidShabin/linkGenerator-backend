@@ -6,7 +6,9 @@ import { createPackageValidation } from "../validators/package.validation.js";
 // Create package
 export const createPackage = async (req, res, next) => {
   try {
-    createPackageValidation(req.body)
+    // Validate first the details
+    createPackageValidation(req.body);
+    // Destructer the details from the request body
     const { name, price, duration, features, currency } = req.body;
 
     // Check if already exists
@@ -21,9 +23,9 @@ export const createPackage = async (req, res, next) => {
       price,
       duration,
       features,
-      currency
+      currency,
     });
-    success(res, newPackage, "Package created")
+    success(res, newPackage, "Package created");
   } catch (error) {
     next(error);
   }
@@ -32,16 +34,24 @@ export const createPackage = async (req, res, next) => {
 // Update package
 export const updatePackage = async (req, res, next) => {
   try {
+    // Get the package id from request params
     const packageId = req.params.id;
+    // Destructure the details from request body
     const { name, price, duration, features, currency } = req.body;
 
+    // Store the upaated data to variable
     const updatedData = { name, price, duration, features, currency };
 
-    const updated = await packageSchema.findByIdAndUpdate(packageId, updatedData, { new: true });
+    // Upadate the by package id
+    const updated = await packageSchema.findByIdAndUpdate(
+      packageId,
+      updatedData,
+      { new: true }
+    );
+    if (!updated) return next(new AppError("Package not found", 404));
 
-    if (!updated) throw new AppError("Package not found", 404);
-
-    success(res, updated, "Package updated")
+    // Send response
+    success(res, updated, "Package updated");
   } catch (error) {
     next(error);
   }
@@ -50,10 +60,12 @@ export const updatePackage = async (req, res, next) => {
 // Delete package
 export const deletePackage = async (req, res, next) => {
   try {
+    // Get the package id from params
     const packageId = req.params.id;
+    // delete the package by id
     const deleted = await packageSchema.findByIdAndDelete(packageId);
-    if (!deleted) throw new AppError("Package not found", 404);
-    success(res, null , "Package deleted")
+    if (!deleted) return next(new AppError("Package not found", 404));
+    success(res, null, "Package deleted");
   } catch (error) {
     next(error);
   }
@@ -63,7 +75,7 @@ export const deletePackage = async (req, res, next) => {
 export const getAllPackages = async (req, res, next) => {
   try {
     const packages = await packageSchema.find({ isActive: true });
-    success(res, packages, "Packages fetched")
+    success(res, packages, "Packages fetched");
   } catch (error) {
     next(error);
   }
