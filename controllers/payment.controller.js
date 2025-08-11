@@ -3,15 +3,18 @@ dotenv.config();
 import userSchema from "../models/user.model.js";
 import stripe from "../configs/stripe.config.js";
 import paymentSchema from "../models/payment.model.js";
+import packageSchema from "../models/package.model.js";
 import { AppError } from "../utils/AppError.js";
 
 // Make payment controller
 export const createCheckoutSession = async (req, res, next) => {
   try {
     // Get selected pan and email
-    const { plan } = req.body;
+    const { planId } = req.body;
     const email = req.user.email;
 
+    // Find the selected package
+    const selectedPlan = await packageSchema.findById(planId);
     // Find the user by email
     const user = await userSchema.findOne({ email });
     if (!user) throw new AppError("User not found", 404);
@@ -22,10 +25,7 @@ export const createCheckoutSession = async (req, res, next) => {
     }
 
     // Determine plan price (in paisa)
-    let amount = 0;
-    if (plan === "pro-plan") amount = 19900; // ₹199/year
-    else if (plan === "one-time") amount = 49900; // ₹499/lifetime
-    else throw new AppError("Invalid plan selected", 400);
+    let amount = selectedPlan.price * 100;
 
     // Create new session
     const session = await stripe.checkout.sessions.create({
@@ -34,9 +34,9 @@ export const createCheckoutSession = async (req, res, next) => {
       line_items: [
         {
           price_data: {
-            currency: "inr",
+            currency: selectedPlan.currency.toLowerCase(),
             product_data: {
-              name: `WhatsApp Tool - ${plan === "pro-plan" ? "Pro Plan" : "One-Time Plan"}`,
+              name: `WhatsApp Tool - ${selectedPlan.name}`,
             },
             unit_amount: amount,
           },
@@ -45,9 +45,9 @@ export const createCheckoutSession = async (req, res, next) => {
       ],
       metadata: {
         userId: user._id.toString(),
-        plan,
+        planId: selectedPlan._id.toString(),
       },
-      // Redirecting URLs 
+      // Redirecting URLs
       success_url: `${process.env.CLIENT_URL}/user/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URL}/user/payment-cancel`,
     });
@@ -56,15 +56,16 @@ export const createCheckoutSession = async (req, res, next) => {
     await paymentSchema.create({
       userId: user._id,
       sessionId: session.id,
-      amount: amount / 100, // store in rupees
-      currency: "INR",
+      amount: selectedPlan.price,
+      currency: selectedPlan.currency,
       status: "pending",
-      plan,
+      plan: selectedPlan.name,
     });
 
     res.status(200).json({ url: session.url });
   } catch (err) {
     next(err);
+    console.log(err)
   }
 };
 
