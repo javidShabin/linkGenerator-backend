@@ -53,7 +53,7 @@ export const deletePackage = async (req, res, next) => {
     const packageId = req.params.id;
     const deleted = await packageSchema.findByIdAndDelete(packageId);
     if (!deleted) throw new AppError("Package not found", 404);
-    res.status(200).json({ message: "Package deleted" });
+    success(res, null , "Package deleted")
   } catch (error) {
     next(error);
   }
@@ -63,7 +63,7 @@ export const deletePackage = async (req, res, next) => {
 export const getAllPackages = async (req, res, next) => {
   try {
     const packages = await packageSchema.find({ isActive: true });
-    res.status(200).json({ message: "Packages fetched", data: packages });
+    success(res, packages, "Packages fetched")
   } catch (error) {
     next(error);
   }
