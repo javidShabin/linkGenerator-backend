@@ -5,6 +5,7 @@ import { router as adminRoutes } from "../routes/admin.routes.js";
 import { router as linkRoutes } from "../routes/link.routes.js";
 import { router as qrRoutes } from "../routes/qr.routes.js";
 import { router as paymentRoutes } from "../routes/payment.routes.js";
+import { router as packageRoutes } from "../routes/package.routes.js";
 
 export const router = express.Router();
 
@@ -25,3 +26,6 @@ router.use("/qr", qrRoutes);
 
 // Payment controlled routes
 router.use("/payment", paymentRoutes)
+
+// Package controller routes
+router.use("/package", packageRoutes)
