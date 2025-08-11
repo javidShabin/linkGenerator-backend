@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 server.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://link-generator-frontend-orcin.vercel.app",
     credentials: true,
   })
 );
