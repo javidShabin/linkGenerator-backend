@@ -116,8 +116,8 @@ export const verifyOTP = async (req, res, next) => {
     res.cookie("userToken", token, {
       // Store the token in cookie
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
     });
 
     await tempUser.deleteOne({ email }); // cleanup temp user
@@ -181,8 +181,8 @@ export const loginUser = async (req, res, next) => {
     res.cookie("userToken", token, {
       // Store the token in cookie
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
     });
 
     // Send the response to client
@@ -208,8 +208,8 @@ export const logOutUser = async (req, res, next) => {
     // Clear the userToken cookie
     res.clearCookie("userToken", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
     });
     // Use your success response utility
     success(res, null, MESSAGES.LOGOUT_SUCCESS);
