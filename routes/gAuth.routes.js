@@ -19,7 +19,7 @@ router.get(
     // Check if the user is not active
     if (!req.user.isActive) {
       return res.redirect(
-        "https://link-generator-frontend-ten.vercel.app/account-blocked"
+        "https://link-generator-frontend-five.vercel.app/account-blocked"
       );
     }
 
@@ -38,6 +38,6 @@ router.get(
     });
 
     // Redirect to frontend dashboard
-    res.redirect(`https://link-generator-frontend-ten.vercel.app/?token=${token}`);
+    res.redirect(`https://link-generator-frontend-five.vercel.app/}`);
   }
 );
