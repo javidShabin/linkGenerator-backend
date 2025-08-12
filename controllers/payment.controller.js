@@ -119,7 +119,6 @@ export const getAllPaymentDetails = async (req, res, next) => {
   try {
     const getAllPayments = await paymentSchema
       .find({})
-      .populate("userId", " email userName");
 
     if (!getAllPayments || getAllPayments.length === 0) {
       throw new AppError("Payment details not available", 404);
