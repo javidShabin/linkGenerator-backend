@@ -15,7 +15,7 @@ server.use(
   cors({
     origin: [
       "https://link-generator-frontend-orcin.vercel.app",
-      "https://link-generator-admin.vercel.app",
+      "https://link-generator-admin-theta.vercel.app",
     ],
     credentials: true,
   })
