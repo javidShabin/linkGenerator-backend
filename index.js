@@ -4,7 +4,7 @@ import express from "express";
 const server = express();
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import "./configs/passport.config.js"
+import "./configs/passport.config.js";
 import passport from "passport";
 import { router as v1Router } from "./routes/index.js";
 import { dbConnection } from "./configs/db.config.js";
@@ -15,9 +15,8 @@ const PORT = process.env.PORT || 3000;
 server.use(
   cors({
     origin: [
-      "https://link-generator-frontend-ten.vercel.app",
+      "https://link-generator-frontend-five.vercel.app",
       "https://link-generator-admin-theta.vercel.app",
-      true
     ],
     credentials: true,
   })
