@@ -16,7 +16,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { session: false, failureRedirect: "/" }),
   (req, res) => {
-    // ✅ Check if the user is not active
+    // Check if the user is not active
     if (!req.user.isActive) {
       return res.redirect(
         "https://link-generator-frontend-five.vercel.app/account-blocked"
