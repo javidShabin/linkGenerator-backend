@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 server.use(
   cors({
     origin: [
-      "https://link-generator-frontend-five.vercel.app",
+      "https://link-generator-frontend-ten.vercel.app",
       "https://link-generator-admin-theta.vercel.app",
     ],
     credentials: true,
