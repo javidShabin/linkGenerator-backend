@@ -189,13 +189,7 @@ export const loginUser = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "User loggined successfully",
-      user: {
-        userName: isUser.userName,
-        email: isUser.email,
-        role: isUser.role,
-        phone: isUser.phone,
-        profileImg: isUser.profileImg || null,
-      },
+      user: isUser,
     });
   } catch (error) {
     next(error);
