@@ -55,6 +55,8 @@ export const createCheckoutSession = async (req, res, next) => {
     // Srore the payment details
     await paymentSchema.create({
       userId: user._id,
+      userName: user.userName, // store username snapshot
+      email: user.email,  
       sessionId: session.id,
       amount: selectedPlan.price,
       currency: selectedPlan.currency,
