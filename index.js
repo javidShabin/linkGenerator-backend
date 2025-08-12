@@ -5,7 +5,7 @@ const server = express();
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import passport from "passport";
-import {router as v1Router} from "./routes/index.js"
+import { router as v1Router } from "./routes/index.js";
 import { dbConnection } from "./configs/db.config.js";
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
 const PORT = process.env.PORT || 3000;
@@ -13,7 +13,10 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 server.use(
   cors({
-    origin: "https://link-generator-frontend-orcin.vercel.app",
+    origin: [
+      "https://link-generator-frontend-orcin.vercel.app",
+      "https://link-generator-admin.vercel.app",
+    ],
     credentials: true,
   })
 );
@@ -29,7 +32,7 @@ server.get("/", (req, res) => {
 server.use("/api/v1", v1Router);
 
 // GLobal error handler
-server.use(globalErrorHandler)
+server.use(globalErrorHandler);
 
 // Database connection function
 dbConnection()
