@@ -36,11 +36,11 @@ router.get(
       sameSite: "none",
     });
 
+    const role = req.user.role?.toLowerCase();
     const redirectUrl =
-      req.user.role === "admin"
+      role === "admin"
         ? "https://link-generator-admin-theta.vercel.app"
         : "https://link-generator-frontend-five.vercel.app";
-
     res.redirect(redirectUrl);
   }
 );
