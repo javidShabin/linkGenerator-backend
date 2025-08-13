@@ -17,7 +17,7 @@ server.use(
     origin: [
       "https://link-generator-frontend-five.vercel.app",
       "https://link-generator-admin-theta.vercel.app",
-      true
+     
     ],
     credentials: true,
   })

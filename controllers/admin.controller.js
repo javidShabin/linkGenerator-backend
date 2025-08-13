@@ -31,7 +31,19 @@ export const getAllUser = async (req, res, next) => {
       isPro: true,
     });
 
-    const result = { users, totalUsers, proUser, proUsersCount };
+    // Get count of inactive user
+    const inactiveUserCount = await userSchema.countDocuments({
+      role: { $ne: "admin" },
+      isActive: false,
+    });
+
+    const result = {
+      users,
+      totalUsers,
+      proUser,
+      proUsersCount,
+      inactiveUserCount,
+    };
 
     success(res, result, MESSAGES.USERS_FETCHED);
   } catch (error) {
