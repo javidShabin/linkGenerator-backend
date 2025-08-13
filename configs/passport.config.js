@@ -22,7 +22,7 @@ passport.use(
         const newUser = await userSchema.create({
           userName: profile.displayName,
           email: profile.emails[0].value,
-          password: "GoogleAuthUser", // optional placeholder
+          password: "", // optional placeholder
           phone: "0000000000",        // optional placeholder
           profileImg: profile.photos[0].value,
           role: "user",
