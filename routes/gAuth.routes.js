@@ -2,6 +2,7 @@ import express from "express";
 import passport from "passport";
 import { generateToken } from "../utils/generateToken.js";
 
+
 export const router = express.Router();
 
 // Trigger Google login
@@ -36,11 +37,7 @@ router.get(
       sameSite: "none",
     });
 
-    const role = req.user.role?.toLowerCase();
-    const redirectUrl =
-      role === "admin"
-        ? "https://link-generator-admin-theta.vercel.app"
-        : "https://link-generator-frontend-five.vercel.app";
-    res.redirect(redirectUrl);
+    // Redirect to frontend dashboard
+    res.redirect(`https://link-generator-frontend-five.vercel.app`);
   }
 );
