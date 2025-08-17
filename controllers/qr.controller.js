@@ -1,4 +1,5 @@
 import QRCodeSchema from "../models/qr.model.js";
+import userSchema from "../models/user.model.js"
 import QRCode from "qrcode";
 import Jimp from "jimp";
 import { uploadToCloudinary } from "../services/cloudinaryUpload.js";
@@ -33,6 +34,11 @@ export const generateQrcode = async (req, res, next) => {
       linkId: link._id,
       generatedFor: "whatsappLink",
     });
+    // Check the user is pro or not
+    const isProUser = await userSchema.findById(userId)
+    if (isProUser.isPro == false) {
+      return next(new AppError("Your not premium user, please update your profile", 400))
+    }
     // Not found qr image with the details generate qr image
     if (!qrCode) {
       const qrCodeImage = await QRCode.toDataURL(whatsappLink);
