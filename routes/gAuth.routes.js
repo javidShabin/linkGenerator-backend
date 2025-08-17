@@ -38,6 +38,6 @@ router.get(
     });
 
     // Redirect to frontend dashboard
-    res.redirect(`https://link-generator-frontend-five.vercel.app/user/dashbord`);
+    res.redirect(`https://link-generator-frontend-five.vercel.app`);
   }
 );
