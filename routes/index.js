@@ -7,6 +7,7 @@ import { router as qrRoutes } from "../routes/qr.routes.js";
 import { router as paymentRoutes } from "../routes/payment.routes.js";
 import { router as packageRoutes } from "../routes/package.routes.js";
 import {router as googleAuthRoute} from "./gAuth.routes.js"
+import { router as brandingRoutes } from "../routes/branding.routes.js";
 
 
 export const router = express.Router();
@@ -34,3 +35,6 @@ router.use("/package", packageRoutes)
 
 // Google auth route
 router.use("/api/auth", googleAuthRoute);
+
+// Branding routes
+router.use("/branding", brandingRoutes);
