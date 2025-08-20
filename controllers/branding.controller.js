@@ -8,6 +8,8 @@ export const setSiteBranding = async (req, res, next) => {
   try {
     const { buttonColor, logoText, logoColor, textColor } = req.body;
 
+    console.log(buttonColor, logoColor, logoText, textColor)
+
     // Optional: upload logo image
     let logoUrl = undefined;
     if (req.file) {

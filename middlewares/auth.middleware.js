@@ -12,7 +12,6 @@ export const authenticate = (req, res, next) => {
       : req.cookies?.userToken;
 
   if (!token) {
-    console.log("error");
     return res
       .status(401)
       .json({ message: "Authentication token missing or invalid" });
